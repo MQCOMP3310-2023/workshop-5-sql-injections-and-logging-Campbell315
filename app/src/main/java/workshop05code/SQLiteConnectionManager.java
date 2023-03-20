@@ -126,20 +126,22 @@ public class SQLiteConnectionManager {
      * @param word the word to store
      */
     public void addValidWord(int id, String word) {
-
+        if (!word.matches("^[a-z]{4}$")) {
+            System.out.println("Invalid Input");
+            
+        }
         String sql = "INSERT INTO validWords(id,word) VALUES(?,?)";
-
         try (Connection conn = DriverManager.getConnection(databaseURL);
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
+            
                 pstmt.setInt(1, id);
                 pstmt.setString(2, word);
                 pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+        }
 
-    }
 
     /**
      * Possible weakness here?
@@ -150,6 +152,7 @@ public class SQLiteConnectionManager {
     public boolean isValidWord(String guess) {
         String sql = "SELECT count(id) as total FROM validWords WHERE word=?";
 
+        
         try (Connection conn = DriverManager.getConnection(databaseURL);
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
 
